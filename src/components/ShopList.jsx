@@ -1,6 +1,11 @@
+import { useState } from "react";
 import { Container, Card, Row, Button, Text } from "@nextui-org/react";
+import BookingModal from "./BookingModal";
 
 function ShopList({ shops, inputText }) {
+  const [visible, setVisible] = useState(false);
+  const handler = () => setVisible(true);
+
   const filteredShops = shops.filter((el) => {
     //if no input the return the original
     if (inputText === '') {
@@ -28,11 +33,12 @@ function ShopList({ shops, inputText }) {
           <Card.Divider />
           <Card.Footer>
             <Row justify="flex-end">
-              <Button size="sm">Réserver</Button>
+              <Button size="sm" shadow onPress={handler}>Réserver</Button>
             </Row>
           </Card.Footer>
         </Card>
       ))}
+      <BookingModal visible={visible} setVisible={setVisible} />
     </Container>
   )
 }
