@@ -8,11 +8,11 @@ function App() {
   const [inputText, setInputText] = useState("");
 
 useEffect(() => {
-  fetch('https://jsonplaceholder.typicode.com/posts')
+  fetch(`${import.meta.env.VITE_API_URL}/shops`)
     .then(response => response.json())
     .then(json => setShops(json))
-}, [])
-
+  }, [])
+  
 return (
   <div className="App">
     <GlobalNavbar setInputText={setInputText} />
