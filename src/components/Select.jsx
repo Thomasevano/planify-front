@@ -1,18 +1,20 @@
-import { useState } from 'react'
 import './select.css'
+import { formatTime } from '../utils/time';
 
-export default function Select({ items }) {
-  const [selected, setSelected] = useState(items[0])
-  console.log(items)
+export default function Select({ items, selectedTimeSlot, setSelectedTimeSlot }) {
+
+  function handleChange(event) {
+    setSelectedTimeSlot(event.target.value);
+  }
 
   return (
-    <select>
+    <select value={selectedTimeSlot} onChange={handleChange}>
       {items.map((item) => (
         <option
           key={item}
           value={item}
         >
-          {item}
+          {formatTime(item)}
         </option>
       ))}
     </select>

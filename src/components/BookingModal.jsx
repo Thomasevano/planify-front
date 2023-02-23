@@ -1,19 +1,25 @@
-import { Modal, Button, Text } from "@nextui-org/react";
+import { Modal, Button, Text, Input } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import React from 'react';
 import { DayPicker, Row } from 'react-day-picker';
-import { differenceInCalendarDays, format } from 'date-fns';
+import { differenceInCalendarDays, format, isToday } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import TimeSlots from "./TimeSlots";
+import Select from "./Select";
+import { formatTime } from "../utils/time";
 
 function BookingModal({ visible, setVisible, shopId }) {
   const [shopInfos, setshopInfos] = useState({});
   const today = new Date();
   const [selectedDay, setSelectedDay] = useState(today);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState();
+  const [customerName, setCustomerName] = useState();
 
-  const footer = <p>{format(selectedDay, 'PPPP', {locale:fr, weekStartsOn:1})}.</p>
-  const selectedDayAvailabilities = shopInfos.Availabilities?.find(({ DayOfWeek }) => DayOfWeek === selectedDay.toLocaleString('default', {weekday: 'long'}).toLowerCase())    
-  
+  const date = format(selectedDay, 'yyyy-MM-dd')
+  const selectedDayIsToday = isToday(selectedDay);
+
+  const footer = <p>{format(selectedDay, 'PPPP', { locale: fr, weekStartsOn: 1 })}.</p>
+  const selectedDayAvailabilities = shopInfos.Availabilities?.find(({ DayOfWeek }) => DayOfWeek === selectedDay.toLocaleString('default', { weekday: 'long' }).toLowerCase())
+
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/shops/${shopId}`)
       .then(response => response.json())
@@ -32,48 +38,118 @@ function BookingModal({ visible, setVisible, shopId }) {
 
   const closeHandler = () => {
     setVisible(false);
-  };
-  return (
-    <div>
-      <Modal
-        closeButton
-        blur
-        aria-labelledby="modal-title"
-        open={visible}
-        onClose={closeHandler}
-      >
-        <Modal.Header>
-          <Text id="modal-title" size={18}>
-            Réserver un créneau
-          </Text>
-        </Modal.Header>
-        <Modal.Body>
-          <DayPicker
-            fromDate={today}
-            components={{ Row: OnlyFutureRow }}
-            hidden={isPastDate}
-            showOutsideDays
-            mode="single"
-            required
-            selected={selectedDay}
-            onSelect={setSelectedDay}
-            footer={footer}
-            locale={fr}
-            weekStartsOn={1}
-          />
-        <TimeSlots selectedDayAvailabilities={selectedDayAvailabilities} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button auto flat color="error" onPress={closeHandler}>
-            Fermer
-          </Button>
-          <Button auto onPress={closeHandler}>
-            Confirmer la réservation
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
-  );
-}
+  }
 
-export default BookingModal;
+  function filterTimeSlots(timeSlots) {
+    const timeSlotsWithoutAppointments = filterAppointmentsTimeSlots(timeSlots);
+    return filterPastTimeSlots(timeSlotsWithoutAppointments);
+  }
+
+  function filterAppointmentsTimeSlots(timeSlots) {
+     return timeSlots.filter((timeSlot) => {
+      return !shopInfos.Appointments.some((appointment) => {
+        return appointment.AppointmentDateTime === `${date} ${formatTime(timeSlot)}:00`;
+      })
+     })
+  }
+
+  function filterPastTimeSlots(timeSlots) {
+    if (selectedDayIsToday) {
+      return timeSlots.filter((timeSlot) => {
+        const timeSlotHours = parseInt(formatTime(timeSlot).split(':')[0]);
+        const timeSlotMinutes = parseInt(formatTime(timeSlot).split(':')[1]);
+
+        const todayHours = today.getHours();
+        const todayMinutes = today.getMinutes();
+
+        return timeSlotHours > todayHours || (timeSlotHours === todayHours && timeSlotMinutes >= todayMinutes);
+      });
+    }
+    return timeSlots;
+  }
+
+    function submitAppointment() {
+      const appointment = {
+        customer_name: customerName,
+        appointment_date: date,
+        appointment_time: `${formatTime(selectedTimeSlot)}:00`,
+        shop_id: shopId,
+      };
+
+      postData(`${import.meta.env.VITE_API_URL}/appointments/`, appointment)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+
+      closeHandler();
+    }
+
+    async function postData(url, data) {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      return response.json();
+    }
+
+
+    return (
+      <div>
+        <Modal
+          closeButton
+          blur
+          aria-labelledby="modal-title"
+          open={visible}
+          onClose={closeHandler}
+        >
+          <Modal.Header>
+            <Text id="modal-title" size={18}>
+              Réserver un créneau
+            </Text>
+          </Modal.Header>
+          <Modal.Body>
+            <DayPicker
+              fromDate={today}
+              components={{ Row: OnlyFutureRow }}
+              hidden={isPastDate}
+              showOutsideDays
+              mode="single"
+              required
+              selected={selectedDay}
+              onSelect={setSelectedDay}
+              footer={footer}
+              locale={fr}
+              weekStartsOn={1}
+            />
+            {selectedDayAvailabilities ?
+              <Select items={filterTimeSlots(selectedDayAvailabilities.TimeSlots)} selectedTimeSlot={selectedTimeSlot} setSelectedTimeSlot={setSelectedTimeSlot} />
+              : <p>La boutique est fermé</p>
+            }
+            <Input underlined labelPlaceholder="Nom" onChange={(e) => setCustomerName(e.target.value)} />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button auto flat color="error" onPress={closeHandler}>
+              Fermer
+            </Button>
+            <Button auto onPress={submitAppointment}>
+              Confirmer la réservation
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    );
+  }
+
+  export default BookingModal;
