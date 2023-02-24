@@ -1,7 +1,7 @@
 import './select.css'
 import { formatTime } from '../utils/time';
 
-export default function Select({ items, selectedTimeSlot, setSelectedTimeSlot }) {
+export default function Select({ items, selectedTimeSlot = 'default', setSelectedTimeSlot }) {
 
   function handleChange(event) {
     setSelectedTimeSlot(event.target.value);
@@ -13,6 +13,7 @@ export default function Select({ items, selectedTimeSlot, setSelectedTimeSlot })
         <>
           <p>Choisissez un créneau horaire</p>
           <select value={selectedTimeSlot} onChange={handleChange}>
+          <option value="default" disabled>Selectionnez un créneau</option>
             {items.map((item) => (
               <option
                 key={item}
