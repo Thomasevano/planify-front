@@ -1,7 +1,7 @@
 import { Text, Navbar, Link, Input, Button } from "@nextui-org/react";
 import { SearchIcon } from "./icons/searchIcon";
 
-function GlobalNavbar ({ setInputText }) {
+function GlobalNavbar({ setInputText, currentUser }) {
 
   let inputHandler = (e) => {
     //convert input text to lower case
@@ -56,17 +56,24 @@ function GlobalNavbar ({ setInputText }) {
 
         </Navbar.Item>
       </Navbar.Content>
-      <Navbar.Content>
-        <Navbar.Link color="inherit" href="#">
-          Login
-        </Navbar.Link>
-        <Navbar.Item>
-          <Button auto flat as={Link} href="#">
-            Sign Up
-          </Button>
-        </Navbar.Item>
-      </Navbar.Content>
-    </Navbar>
+      {currentUser ? (
+        <Navbar.Content>
+          <p>connecté</p>
+        </Navbar.Content>
+      ) : (
+        <Navbar.Content>
+          <Navbar.Link color="inherit" href="/login">
+            Se connecter
+          </Navbar.Link>
+          <Navbar.Item>
+            <Button auto flat href="/register">
+              S'inscrire
+            </Button>
+          </Navbar.Item>
+        </Navbar.Content>
+      )
+      }
+    </Navbar >
   )
 }
 
