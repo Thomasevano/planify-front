@@ -37,7 +37,7 @@ function ShopList({ shops, inputText }) {
             <Card.Divider />
             <Card.Footer>
               <Row justify="flex-end">
-                <Button size="sm" shadow onPress={handler}>Réserver</Button>
+                <Button size="sm" shadow onPress={handler}>Prendre rendez-vous</Button>
               </Row>
             </Card.Footer>
           </Card>

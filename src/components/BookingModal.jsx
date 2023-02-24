@@ -139,11 +139,11 @@ function BookingModal({ visible, setVisible, shopId }) {
       >
         <Modal.Header>
           <Text id="modal-title" size={18}>
-            Prendre rendez-vous
+            Choisir une date et une heure de rendez-vous
           </Text>
         </Modal.Header>
         <Modal.Body>
-        <Text>Choisissez une date</Text>
+          <Text>Choisissez une date</Text>
           <DayPicker
             fromDate={today}
             components={{ Row: OnlyFutureRow }}
@@ -161,15 +161,14 @@ function BookingModal({ visible, setVisible, shopId }) {
           {selectedDayAvailabilities &&
             <Select items={filterTimeSlots(selectedDayAvailabilities.TimeSlots)} selectedTimeSlot={selectedTimeSlot} setSelectedTimeSlot={setSelectedTimeSlot} />
           }
-          <Text>Entrez votre Nom</Text>
-          <Input css={{marginTop: "20px"}} underlined labelPlaceholder="Nom" onChange={(e) => setCustomerName(e.target.value)} />
+          <Input css={{ marginTop: "20px" }} underlined labelPlaceholder="Entrez votre Nom" onChange={(e) => setCustomerName(e.target.value)} />
         </Modal.Body>
         <Modal.Footer>
           <Button auto flat color="error" onPress={closeHandler}>
-            Fermer
+            Annuler
           </Button>
           <Button auto onPress={submitAppointment}>
-            Confirmer la réservation
+            Je prends rendez-vous
           </Button>
         </Modal.Footer>
       </Modal>
