@@ -4,9 +4,11 @@ import React from 'react';
 import { DayPicker, Row } from 'react-day-picker';
 import { differenceInCalendarDays, format, isToday } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { ToastContainer } from 'react-toastify';
 import Select from "./Select";
 import { formatTime } from "../utils/time";
-import { ToastContainer, toast } from 'react-toastify';
+import { notify } from '../utils/notification';
+import { postData } from "../services/postData";
 
 function BookingModal({ visible, setVisible, shopId }) {
   const [shopInfos, setshopInfos] = useState({});
@@ -93,23 +95,6 @@ function BookingModal({ visible, setVisible, shopId }) {
       console.error(error);
       return notify(error);
     };
-  }
-
-  async function postData(url, data) {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
-    return response.json();
-  }
-
-  function notify(response) {
-    toast(response.Message,
-      { type: response.HttpCode === 200 ? "success" : "error", theme: "colored" },
-    );
   }
 
   return (
