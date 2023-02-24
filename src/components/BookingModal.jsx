@@ -76,7 +76,7 @@ function BookingModal({ visible, setVisible, shopId }) {
     return timeSlots;
   }
 
-  function submitAppointment() {
+  async function submitAppointment() {
     const appointment = {
       customer_name: customerName,
       appointment_date: date,
@@ -84,19 +84,15 @@ function BookingModal({ visible, setVisible, shopId }) {
       shop_id: shopId,
     };
 
-    postData(`${import.meta.env.VITE_API_URL}/appointments/`, appointment)
-      .then(response => {
-        if (!response.HttpCode === 200) {
-          throw new Error(response.Message);
-        }
-        return notify(response);
-      })
-      .catch(error => {
-        console.error(error);
-        return notify(error);
-      });
-
     closeHandler();
+
+    try {
+      const response = await postData(`${import.meta.env.VITE_API_URL}/appointments/`, appointment)
+      return notify(response);
+    } catch (error) {
+      console.error(error);
+      return notify(error);
+    };
   }
 
   async function postData(url, data) {
