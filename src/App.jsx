@@ -3,6 +3,7 @@ import './App.css'
 import GlobalNavbar from './components/GlobalNavbar.jsx';
 import ShopList from './components/ShopList.jsx';
 import 'react-day-picker/dist/style.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [shops, setShops] = useState([])

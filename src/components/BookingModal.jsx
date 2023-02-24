@@ -6,6 +6,7 @@ import { differenceInCalendarDays, format, isToday } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import Select from "./Select";
 import { formatTime } from "../utils/time";
+import { ToastContainer, toast } from 'react-toastify';
 
 function BookingModal({ visible, setVisible, shopId }) {
   const [shopInfos, setshopInfos] = useState({});
@@ -42,6 +43,8 @@ function BookingModal({ visible, setVisible, shopId }) {
   }
 
   const closeHandler = () => {
+    setSelectedTimeSlot();
+    setCustomerName();
     setVisible(false);
   }
 
@@ -86,13 +89,11 @@ function BookingModal({ visible, setVisible, shopId }) {
         if (!response.HttpCode === 200) {
           throw new Error(response.Message);
         }
-        return response.Message;
-      })
-      .then(data => {
-        console.log(data);
+        return notify(response);
       })
       .catch(error => {
         console.error(error);
+        return notify(error);
       });
 
     closeHandler();
@@ -109,8 +110,26 @@ function BookingModal({ visible, setVisible, shopId }) {
     return response.json();
   }
 
+  function notify(response) {
+    toast(response.Message,
+      { type: response.HttpCode === 200 ? "success" : "error", theme: "colored" },
+    );
+  }
+
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Modal
         closeButton
         blur
