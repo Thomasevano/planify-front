@@ -83,10 +83,10 @@ function BookingModal({ visible, setVisible, shopId }) {
 
     postData(`${import.meta.env.VITE_API_URL}/appointments/`, appointment)
       .then(response => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
+        if (!response.HttpCode === 200) {
+          throw new Error(response.Message);
         }
-        return response.json();
+        return response.Message;
       })
       .then(data => {
         console.log(data);
