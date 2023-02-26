@@ -1,18 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Text, Navbar, Input, Button, Dropdown, Avatar } from "@nextui-org/react";
 import { SearchIcon } from "./icons/searchIcon";
 import { useNavigate } from "react-router-dom";
+import { useCurrentUser } from "../CurrentUserContext";
+import authService from "../services/auth.service";
 
-function GlobalNavbar({ setInputText, currentUser, setLoginModalVisible, setRegisterModalVisible, logout }) {
+function GlobalNavbar({ setInputText, setLoginModalVisible, setRegisterModalVisible }) {
   const navigate = useNavigate();
+  const { currentUser, fetchCurrentUser, logoutUser } = useCurrentUser();
   const userName = currentUser && currentUser.firstName + " " + currentUser.lastName;
   const userInitials = currentUser && currentUser.firstName[0] + currentUser.lastName[0];
+
+  useEffect(() => {
+    fetchCurrentUser();
+  }, []);
 
   let inputHandler = (e) => {
     //convert input text to lower case
     var lowerCase = e.target.value.toLowerCase();
     setInputText(lowerCase);
   };
+
+  function logout() {
+    authService.logout();
+    logoutUser();
+    navigate("/");
+  }
 
   return (
     <Navbar shouldHideOnScroll variant="sticky">
