@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+
 export function formatTime(timeSlot) {
   const time = new Date(timeSlot)
   const hours = time.getHours();
@@ -8,4 +10,10 @@ export function formatTime(timeSlot) {
   }
 
   return `${hours}:${minutes}`;
+}
+
+export function notify(response) {
+  toast(response.Message,
+    { type: response.HttpCode === 200 ? "success" : "error", theme: "colored" },
+  );
 }

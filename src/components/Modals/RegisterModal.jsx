@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, Modal } from "@nextui-org/react";
-import RegisterForm from "../components/RegisterForm";
+import RegisterForm from "../Forms/RegisterForm";
 
 function Register({ registerModalVisible, setRegisterModalVisible }) {
   const closeRegisterHandler = () => {

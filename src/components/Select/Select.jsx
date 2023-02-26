@@ -1,5 +1,5 @@
 import './select.css'
-import { formatTime } from '../utils/time';
+import { formatTime } from '../../helpers/utils';
 
 export default function Select({ items, selectedTimeSlot = 'default', setSelectedTimeSlot }) {
 

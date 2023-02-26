@@ -3,12 +3,11 @@ import { useForm, Controller } from "react-hook-form";
 import { Input, Button, Modal } from "@nextui-org/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import authService from '../services/auth.service';
-import { withRouter } from '../common/with-router';
-import ErrorMessage from '../utils/ErrorMessage';
-import { Mail } from './icons/Mail';
-import { Password } from './icons/Password';
+import authService from '../../services/auth.service';
+import ErrorMessage from '../ErrorMessage';
+import { Password } from '../icons/Password';
 import { useNavigate } from "react-router-dom";
+import InputForm from "./InputForm";
 
 const schema = yup.object().shape({
   Email: yup.string().email("l'adresse email n'est pas valide"),
@@ -48,21 +47,7 @@ function LoginForm({ closeHandler }) {
         <Controller
           name="Email"
           control={control}
-          render={({ field }) =>
-            <Input
-              required
-              clearable
-              bordered
-              fullWidth
-              color='primary'
-              size='lg'
-              helperText="Requis"
-              label="Email"
-              placeholder="Adresse Email" {...field}
-              status={errors.Email ? 'error' : 'default'}
-              contentLeft={<Mail fill="currentColor" />}
-            />
-          }
+          render={({ field }) => <InputForm field={field} name="Email" label="Email" errors={errors}/>}
         />
         <ErrorMessage message={errors.Email?.message} />
         <Controller
@@ -98,4 +83,4 @@ function LoginForm({ closeHandler }) {
   );
 }
 
-export default withRouter(LoginForm);
+export default LoginForm;

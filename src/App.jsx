@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import './App.css'
 import 'react-day-picker/dist/style.css';
 import 'react-toastify/dist/ReactToastify.css';
-import GlobalNavbar from './components/GlobalNavbar.jsx';
+import GlobalNavbar from './components/GlobalNavbar';
 import authService from './services/auth.service';
 import { Routes, Route } from 'react-router-dom';
 import ShopList from './components/ShopList';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import LoginModal from './components/Modals/LoginModal';
+import Register from './components/Modals/RegisterModal';
 
 function App() {
   const [shops, setShops] = useState([])
@@ -53,7 +53,7 @@ function App() {
         {/* <Route path="/profile" element={<Profile />} /> */}
         {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
-      <Login loginModalVisible={loginModalVisible} setLoginModalVisible={setLoginModalVisible} />
+      <LoginModal loginModalVisible={loginModalVisible} setLoginModalVisible={setLoginModalVisible} />
       <Register registerModalVisible={registerModalVisible} setRegisterModalVisible={setRegisterModalVisible} />
     </div>
   )

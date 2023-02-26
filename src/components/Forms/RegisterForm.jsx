@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Input, Radio, Button, Modal } from "@nextui-org/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import authService from "../services/auth.service";
-import ErrorMessage from "../utils/ErrorMessage";
-import { Mail } from './icons/Mail';
-import { Password } from './icons/Password';
+import authService from "../../services/auth.service";
+import ErrorMessage from "../ErrorMessage";
+import InputForm from "./InputForm";
+import { Password } from "../icons/Password";
 
 const schema = yup.object().shape({
   FirstName: yup.string().min(3, 'Le prénom doit contenir au moins 3 caractères').max(32, 'Le prénom doit contenir au plus 32 caractères'),
@@ -48,59 +48,19 @@ function RegisterForm({ closeHandler }) {
         <Controller
           name="FirstName"
           control={control}
-          render={({ field }) =>
-            <Input {...field}
-              required
-              clearable
-              bordered
-              fullWidth
-              color='primary'
-              size='lg'
-              helperText="Requis"
-              label="Prénom"
-              placeholder="Prénom"
-              status={errors.FirstName ? 'error' : 'default'}
-            />
-          }
+          render={({ field }) => <InputForm field={field} name="FirstName" label="Prénom" errors={errors}/>}
         />
         <ErrorMessage message={errors.FirstName?.message} />
         <Controller
           name="LastName"
           control={control}
-          render={({ field }) =>
-            <Input {...field}
-              required
-              clearable
-              bordered
-              fullWidth
-              color='primary'
-              size='lg'
-              helperText="Requis"
-              label="Nom de Famille"
-              placeholder="Nom de Famille"
-              status={errors.LastName ? 'error' : 'default'}
-            />
-          }
+          render={({ field }) => <InputForm field={field} name="LastName" label="Nom de Famille" errors={errors}/>}
         />
         <ErrorMessage message={errors.LastName?.message} />
         <Controller
           name="Email"
           control={control}
-          render={({ field }) =>
-            <Input {...field}
-              required
-              clearable
-              bordered
-              fullWidth
-              color='primary'
-              size='lg'
-              helperText="Requis"
-              label="Email"
-              placeholder="Email"
-              status={errors.Email ? 'error' : 'default'}
-              contentLeft={<Mail fill="currentColor" />}
-            />
-          }
+          render={({ field }) => <InputForm field={field} name="Email" label="Email" errors={errors}/>}
         />
         <ErrorMessage message={errors.Email?.message} />
         <Controller

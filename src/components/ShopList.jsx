@@ -1,8 +1,7 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Container, Card, Row, Button, Text } from "@nextui-org/react";
-
-import BookingModal from "./BookingModal";
+import BookingModal from "./Modals/BookingModal";
 
 function ShopList({ shops, inputText }) {
   const [visible, setVisible] = useState(false);

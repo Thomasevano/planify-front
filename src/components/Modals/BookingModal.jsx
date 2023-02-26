@@ -5,10 +5,9 @@ import { DayPicker, Row } from 'react-day-picker';
 import { differenceInCalendarDays, format, isToday } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { ToastContainer } from 'react-toastify';
-import Select from "./Select";
-import { formatTime } from "../utils/time";
-import { notify } from '../utils/notification';
-import { postData } from "../services/postData";
+import Select from "../Select/Select";
+import { formatTime, notify } from '../../helpers/utils';
+import { postData } from "../../helpers/postData";
 
 function BookingModal({ visible, setVisible, shopId }) {
   const [shopInfos, setshopInfos] = useState({});

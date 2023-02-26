@@ -1,8 +1,8 @@
 import React from "react";
 import { Text, Modal } from "@nextui-org/react";
-import LoginForm from "../components/LoginForm";
+import LoginForm from "../Forms/LoginForm";
 
-function Login({ loginModalVisible, setLoginModalVisible }) {
+function LoginModal({ loginModalVisible, setLoginModalVisible }) {
   const closeLoginHandler = () => {
     setLoginModalVisible(false);
   }
@@ -25,4 +25,4 @@ function Login({ loginModalVisible, setLoginModalVisible }) {
   );
 }
 
-export default Login;
+export default LoginModal;
