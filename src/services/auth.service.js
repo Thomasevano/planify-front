@@ -1,13 +1,13 @@
 import axios from "axios";
+import decodeUserJWT from "../helpers/decodeUserJWT";
 
 class AuthService {
   login(user) {
     return axios.post(`${import.meta.env.VITE_API_URL}/auth/`, user)
       .then(response => {
         if (response.data.Token) {
-          localStorage.setItem("user", JSON.stringify(response.data));
+          localStorage.setItem("user", JSON.stringify(response.data.Token));
         }
-
         return response.data;
       });
   }
@@ -17,11 +17,15 @@ class AuthService {
   }
 
   register(user) {
-    return axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, user); 
+    return axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, user);
   }
 
-  getCurrentUser() {
-    return JSON.parse(localStorage.getItem('user'));;
+  async getCurrentUser() {
+    const userToken = JSON.parse(localStorage.getItem('user'));
+    if (userToken) {
+      const user = await decodeUserJWT(userToken);
+      return user;
+    }
   }
 }
 

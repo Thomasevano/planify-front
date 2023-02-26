@@ -1,7 +1,12 @@
-import { Text, Navbar, Link, Input, Button } from "@nextui-org/react";
+import React from "react";
+import { Text, Navbar, Input, Button, Dropdown, Avatar } from "@nextui-org/react";
 import { SearchIcon } from "./icons/searchIcon";
+import { useNavigate } from "react-router-dom";
 
-function GlobalNavbar({ setInputText, currentUser }) {
+function GlobalNavbar({ setInputText, currentUser, setLoginModalVisible, setRegisterModalVisible, logout }) {
+  const navigate = useNavigate();
+  const userName = currentUser && currentUser.firstName + " " + currentUser.lastName;
+  const userInitials = currentUser && currentUser.firstName[0] + currentUser.lastName[0];
 
   let inputHandler = (e) => {
     //convert input text to lower case
@@ -58,15 +63,45 @@ function GlobalNavbar({ setInputText, currentUser }) {
       </Navbar.Content>
       {currentUser ? (
         <Navbar.Content>
-          <p>connecté</p>
+          <Dropdown placement="bottom-right">
+            <Navbar.Item>
+              <Dropdown.Trigger>
+                <Avatar
+                  bordered
+                  as="button"
+                  text={userInitials}
+                  size="md"
+                />
+              </Dropdown.Trigger>
+            </Navbar.Item>
+            <Dropdown.Menu
+              aria-label="User Menu actions"
+              color="primary"
+              onAction={(actionKey) => actionKey === 'logout' ? logout() : navigate('/' + actionKey)}
+            >
+              <Dropdown.Item key="profile" css={{ height: "$24"}}>
+                <Text b color="inherit" css={{d:"flex"}}>Connecté en tant que</Text>
+                <Text b color="inherit" css={{d:"flex"}}>{userName}</Text>
+                <Text color="inherit" css={{d:"flex"}}>{currentUser.email}</Text>
+              </Dropdown.Item>
+              <Dropdown.Item key="settings" withDivider>
+                Paramètres
+              </Dropdown.Item>
+              <Dropdown.Item key="logout" withDivider color="error">
+                Se déconnecter
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </Navbar.Content>
       ) : (
         <Navbar.Content>
-          <Navbar.Link color="inherit" href="/login">
-            Se connecter
-          </Navbar.Link>
           <Navbar.Item>
-            <Button auto flat href="/register">
+            <Button auto flat color="secondary" onPress={() => setLoginModalVisible(true)}>
+              Se connecter
+            </Button>
+          </Navbar.Item>
+          <Navbar.Item>
+            <Button auto flat color="primary" onPress={() => setRegisterModalVisible(true)}>
               S'inscrire
             </Button>
           </Navbar.Item>
