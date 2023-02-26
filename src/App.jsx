@@ -4,7 +4,7 @@ import 'react-day-picker/dist/style.css';
 import 'react-toastify/dist/ReactToastify.css';
 import GlobalNavbar from './components/GlobalNavbar';
 import authService from './services/auth.service';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import ShopList from './components/ShopList';
 import LoginModal from './components/Modals/LoginModal';
 import Register from './components/Modals/RegisterModal';
@@ -15,6 +15,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState();
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const [registerModalVisible, setRegisterModalVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/shops`)

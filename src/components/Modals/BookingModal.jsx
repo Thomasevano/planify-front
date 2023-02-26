@@ -89,10 +89,10 @@ function BookingModal({ visible, setVisible, shopId }) {
 
     try {
       const response = await postData(`${import.meta.env.VITE_API_URL}/appointments/`, appointment)
-      return notify(response);
+      return notify(response.HttpCode, response.Message);
     } catch (error) {
       console.error(error);
-      return notify(error);
+      return notify(error.HttpCode, error.Message);
     };
   }
 

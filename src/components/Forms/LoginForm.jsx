@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm, Controller } from "react-hook-form";
-import { Input, Button, Modal } from "@nextui-org/react";
+import { Input, Button, Modal, Container, Card, Row, Text } from "@nextui-org/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import authService from '../../services/auth.service';
@@ -8,6 +8,7 @@ import ErrorMessage from '../ErrorMessage';
 import { Password } from '../icons/Password';
 import { useNavigate } from "react-router-dom";
 import InputForm from "./InputForm";
+import { notify } from '../../helpers/utils';
 
 const schema = yup.object().shape({
   Email: yup.string().email("l'adresse email n'est pas valide"),
@@ -24,21 +25,25 @@ function LoginForm({ closeHandler }) {
     },
     resolver: yupResolver(schema),
   });
-  
+
+  const [failedLogin, setFailedLogin] = useState(false);
+
   const onSubmit = data => {
     authService.login(data)
-      .then(() => {
-        response => {
-          console.log(response.data);
+      .then((response) => {
+        console.log('reponse', response);
+        if (response.HttpCode === 200) {
+          setFailedLogin(false);
+          closeHandler();
+          navigate('/profile');
+          window.location.reload();
+        } else {
+          setFailedLogin(true);
         }
-        closeHandler();
-        navigate('/profile');
-        window.location.reload();
       })
-      .catch(error => {
-        console.log(error);
-      })
-    console.log(data);
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
@@ -47,7 +52,7 @@ function LoginForm({ closeHandler }) {
         <Controller
           name="Email"
           control={control}
-          render={({ field }) => <InputForm field={field} name="Email" label="Email" errors={errors}/>}
+          render={({ field }) => <InputForm field={field} name="Email" label="Email" errors={errors} />}
         />
         <ErrorMessage message={errors.Email?.message} />
         <Controller
@@ -72,6 +77,19 @@ function LoginForm({ closeHandler }) {
         <ErrorMessage message={errors.Password?.message} />
       </Modal.Body>
       <Modal.Footer>
+        {failedLogin &&
+          <Container>
+            <Card css={{ $$cardColor: '$colors$error' }}>
+              <Card.Body>
+                <Row justify="center" align="center">
+                  <Text h6 size={15} color="white" css={{ m: 0 }}>
+                    Identifiants incorrects !
+                  </Text>
+                </Row>
+              </Card.Body>
+            </Card>
+          </Container>
+        }
         <Button auto flat color="error" onPress={closeHandler}>
           Fermer
         </Button>

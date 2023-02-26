@@ -12,8 +12,8 @@ export function formatTime(timeSlot) {
   return `${hours}:${minutes}`;
 }
 
-export function notify(response) {
-  toast(response.Message,
-    { type: response.HttpCode === 200 ? "success" : "error", theme: "colored" },
+export function notify(httpCode, message) {
+  toast(message,
+    { type: httpCode === 200 ? "success" : "error", theme: "colored" },
   );
 }

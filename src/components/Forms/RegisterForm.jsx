@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Input, Radio, Button, Modal } from "@nextui-org/react";
+import { Input, Radio, Button, Modal, Container, Card, Row, Text } from "@nextui-org/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import authService from "../../services/auth.service";
 import ErrorMessage from "../ErrorMessage";
 import InputForm from "./InputForm";
 import { Password } from "../icons/Password";
+import { notify } from "../../helpers/utils";
 
 const schema = yup.object().shape({
   FirstName: yup.string().min(3, 'Le prénom doit contenir au moins 3 caractères').max(32, 'Le prénom doit contenir au plus 32 caractères'),
@@ -27,19 +28,24 @@ function RegisterForm({ closeHandler }) {
     resolver: yupResolver(schema),
   });
 
+  const [failedRegister, setFailedRegister] = useState(false);
+  const [failedRegisterMessage, setFailedRegisterMessage] = useState('');
+
   const onRegisterSubmit = data => {
-    console.log('data', data);
-    console.log(errors)
-    // authService.register(data)
-    //   .then(() => {
-    //     response => {
-    //       console.log(response.data);
-    //     }
-    //     closeHandler();
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   })
+    authService.register(data)
+      .then((response) => {
+        console.log(response);
+        if (response.HttpCode === 200) {
+        closeHandler();
+        notify(response.data.HttpCode, 'Votre compte a bien été créé, vous pouvez vous connecter')
+        } else {
+          setFailedRegisterMessage(response.data.Message);
+          setFailedRegister(true);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      })
   };
 
   return (
@@ -48,19 +54,19 @@ function RegisterForm({ closeHandler }) {
         <Controller
           name="FirstName"
           control={control}
-          render={({ field }) => <InputForm field={field} name="FirstName" label="Prénom" errors={errors}/>}
+          render={({ field }) => <InputForm field={field} name="FirstName" label="Prénom" errors={errors} />}
         />
         <ErrorMessage message={errors.FirstName?.message} />
         <Controller
           name="LastName"
           control={control}
-          render={({ field }) => <InputForm field={field} name="LastName" label="Nom de Famille" errors={errors}/>}
+          render={({ field }) => <InputForm field={field} name="LastName" label="Nom de Famille" errors={errors} />}
         />
         <ErrorMessage message={errors.LastName?.message} />
         <Controller
           name="Email"
           control={control}
-          render={({ field }) => <InputForm field={field} name="Email" label="Email" errors={errors}/>}
+          render={({ field }) => <InputForm field={field} name="Email" label="Email" errors={errors} />}
         />
         <ErrorMessage message={errors.Email?.message} />
         <Controller
@@ -96,6 +102,19 @@ function RegisterForm({ closeHandler }) {
         />
       </Modal.Body>
       <Modal.Footer>
+      {failedRegister &&
+          <Container>
+            <Card css={{ $$cardColor: '$colors$error' }}>
+              <Card.Body>
+                <Row justify="center" align="center">
+                  <Text h6 size={15} color="white" css={{ m: 0 }}>
+                    {failedRegisterMessage}
+                  </Text>
+                </Row>
+              </Card.Body>
+            </Card>
+          </Container>
+        }
         <Button auto flat color="error" onPress={closeHandler}>
           Fermer
         </Button>
