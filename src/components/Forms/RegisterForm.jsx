@@ -35,9 +35,9 @@ function RegisterForm({ closeHandler }) {
     authService.register(data)
       .then((response) => {
         console.log(response);
-        if (response.HttpCode === 200) {
-        closeHandler();
-        notify(response.data.HttpCode, 'Votre compte a bien été créé, vous pouvez vous connecter')
+        if (response.data.HttpCode === 200) {
+          closeHandler();
+          notify(response.data.HttpCode, 'Votre compte a bien été crée, vous pouvez vous connecter')
         } else {
           setFailedRegisterMessage(response.data.Message);
           setFailedRegister(true);
@@ -102,7 +102,7 @@ function RegisterForm({ closeHandler }) {
         />
       </Modal.Body>
       <Modal.Footer>
-      {failedRegister &&
+        {failedRegister &&
           <Container>
             <Card css={{ $$cardColor: '$colors$error' }}>
               <Card.Body>
