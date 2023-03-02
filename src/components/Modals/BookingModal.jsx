@@ -9,7 +9,7 @@ import Select from "../Select/Select";
 import { formatTime, notify } from '../../helpers/utils';
 import { postData } from "../../helpers/postData";
 
-function BookingModal({ visible, setVisible, shopId }) {
+function BookingModal({ visible, setVisible, selectedShopId, setSelectedShopId }) {
   const [shopInfos, setshopInfos] = useState({});
   const today = new Date();
   const [selectedDay, setSelectedDay] = useState(today);
@@ -28,10 +28,11 @@ function BookingModal({ visible, setVisible, shopId }) {
   const disabledDays = { dayOfWeek: indexOfDayOfWeekWithoutAvailabilities };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/shops/${shopId}`)
+    if (!selectedShopId) return;
+    fetch(`${import.meta.env.VITE_API_URL}/shops/${selectedShopId}`)
       .then(response => response.json())
       .then(json => setshopInfos(json))
-  }, [visible])
+  }, [selectedShopId]);
 
   function isPastDate(date) {
     return differenceInCalendarDays(date, today) < 0;
@@ -46,6 +47,8 @@ function BookingModal({ visible, setVisible, shopId }) {
   const closeHandler = () => {
     setSelectedTimeSlot();
     setCustomerName();
+    setSelectedShopId();
+    setSelectedDay(today);
     setVisible(false);
   }
 
@@ -82,7 +85,7 @@ function BookingModal({ visible, setVisible, shopId }) {
       customer_name: customerName,
       appointment_date: date,
       appointment_time: `${formatTime(selectedTimeSlot)}:00`,
-      shop_id: shopId,
+      shop_id: selectedShopId,
     };
 
     closeHandler();

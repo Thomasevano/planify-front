@@ -5,7 +5,12 @@ import BookingModal from "./Modals/BookingModal";
 
 function ShopList({ shops, inputText }) {
   const [visible, setVisible] = useState(false);
-  const handler = () => setVisible(true);
+  const [selectedShopId, setSelectedShopId] = useState({});
+
+  function handler(shopId) {
+    setVisible(true);
+    setSelectedShopId(shopId);
+  }
 
   const filteredShops = shops.filter((el) => {
     //if no input the return the original
@@ -36,11 +41,11 @@ function ShopList({ shops, inputText }) {
             <Card.Divider />
             <Card.Footer>
               <Row justify="flex-end">
-                <Button size="sm" shadow onPress={handler}>Prendre rendez-vous</Button>
+                <Button size="sm" shadow onPress={() => handler(shop.ID)}>Prendre rendez-vous</Button>
               </Row>
             </Card.Footer>
           </Card>
-          <BookingModal visible={visible} setVisible={setVisible} shopId={shop.ID} />
+          <BookingModal visible={visible} setVisible={setVisible} selectedShopId={selectedShopId} setSelectedShopId={setSelectedShopId} />
         </React.Fragment>
       ))}
     </Container>
