@@ -7,6 +7,7 @@ export default async function decodeUserJWT(userToken) {
   const { payload, protectedHeader } = await jose.jwtVerify(jwt, secret);
 
   const user = {
+    id: payload.id,
     firstName: payload.firstName,
     lastName: payload.lastName,
     email: payload.email,

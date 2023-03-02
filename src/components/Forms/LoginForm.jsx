@@ -6,9 +6,7 @@ import * as yup from "yup";
 import authService from '../../services/auth.service';
 import ErrorMessage from '../ErrorMessage';
 import { Password } from '../icons/Password';
-import { useNavigate } from "react-router-dom";
 import InputForm from "./InputForm";
-import { notify } from '../../helpers/utils';
 
 const schema = yup.object().shape({
   Email: yup.string().email("l'adresse email n'est pas valide"),
@@ -16,7 +14,6 @@ const schema = yup.object().shape({
 }).required();
 
 function LoginForm({ closeHandler }) {
-  const navigate = useNavigate();
 
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
@@ -35,7 +32,6 @@ function LoginForm({ closeHandler }) {
         if (response.HttpCode === 200) {
           setFailedLogin(false);
           closeHandler();
-          navigate('/profile');
           window.location.reload();
         } else {
           setFailedLogin(true);

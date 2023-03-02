@@ -2,13 +2,22 @@ import React from "react";
 import { useState } from "react";
 import { Container, Card, Row, Button, Text } from "@nextui-org/react";
 import BookingModal from "./Modals/BookingModal";
+import { useCurrentUser } from "../CurrentUserContext";
+import RetailerModal from "./Modals/RetailerModal";
 
-function ShopList({ shops, inputText }) {
-  const [visible, setVisible] = useState(false);
-  const [selectedShopId, setSelectedShopId] = useState({});
+function ShopList({ shops, inputText = '' }) {
+  const [isBookingModalVisible, setIsBookingModalVisible] = useState(false);
+  const [selectedShopId, setSelectedShopId] = useState(null);
+  const { currentUser } = useCurrentUser();
+  const [isRetailerModalVisible, setIsRetailerModalVisible] = useState(false);
 
-  function handler(shopId) {
-    setVisible(true);
+  function bookingModalHandler(shopId) {
+    setIsBookingModalVisible(true);
+    setSelectedShopId(shopId);
+  }
+
+  function retailerModalHandler(shopId) {
+    setIsRetailerModalVisible(true);
     setSelectedShopId(shopId);
   }
 
@@ -22,6 +31,7 @@ function ShopList({ shops, inputText }) {
       return el.ShopName.toLowerCase().includes(inputText);
     }
   })
+
 
 
   return (
@@ -40,11 +50,21 @@ function ShopList({ shops, inputText }) {
             </Card.Body>
             <Card.Footer>
               <Row justify="center">
-                <Button size="md" onPress={() => handler(shop.ID)}>Prendre rendez-vous</Button>
+                {currentUser && currentUser.id === shop.UserId
+                  ?
+                  <Button size="md" onPress={() => retailerModalHandler(shop.ID)}>Voir les rendez-vous</Button>
+                  :
+                  <Button size="md" onPress={() => bookingModalHandler(shop.ID)}>Prendre rendez-vous</Button>
+                }
               </Row>
             </Card.Footer>
           </Card>
-          <BookingModal visible={visible} setVisible={setVisible} selectedShopId={selectedShopId} setSelectedShopId={setSelectedShopId} />
+          {isBookingModalVisible &&
+            <BookingModal visible={isBookingModalVisible} setVisible={setIsBookingModalVisible} selectedShopId={selectedShopId} setSelectedShopId={setSelectedShopId} />
+          }
+          {isRetailerModalVisible &&
+            <RetailerModal visible={isRetailerModalVisible} setVisible={setIsRetailerModalVisible} selectedShopId={selectedShopId} setSelectedShopId={setSelectedShopId} />
+          }
         </React.Fragment>
       ))}
     </Container>

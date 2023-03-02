@@ -1,4 +1,6 @@
 import { toast } from 'react-toastify';
+import { format } from 'date-fns';
+import fr from 'date-fns/locale/fr';
 
 export function formatTime(timeSlot) {
   const time = new Date(timeSlot)
@@ -17,3 +19,9 @@ export function notify(httpCode, message) {
     { type: httpCode === 200 ? "success" : "error", theme: "colored" },
   );
 }
+
+export const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+export const footerFormatedDate = (date) => format(date, 'PPPP', { locale: fr, weekStartsOn: 1 })
+
+export const today = new Date();

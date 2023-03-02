@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Text, Navbar, Input, Button, Dropdown, Avatar } from "@nextui-org/react";
+import { Text, Navbar, Input, Button, Dropdown, Avatar, Link } from "@nextui-org/react";
 import { SearchIcon } from "./icons/searchIcon";
 import { useNavigate } from "react-router-dom";
 import { useCurrentUser } from "../CurrentUserContext";
@@ -30,9 +30,9 @@ function GlobalNavbar({ setInputText, setLoginModalVisible, setRegisterModalVisi
   return (
     <Navbar shouldHideOnScroll variant="sticky">
       <Navbar.Brand>
-        <Text b color="inherit" hideIn="xs">
+        <Link href="/" color="inherit">
           Planify
-        </Text>
+        </Link>
       </Navbar.Brand>
       <Navbar.Content
         css={{
@@ -97,14 +97,16 @@ function GlobalNavbar({ setInputText, setLoginModalVisible, setRegisterModalVisi
               color="primary"
               onAction={(actionKey) => actionKey === 'logout' ? logout() : navigate('/' + actionKey)}
             >
-              <Dropdown.Item key="profile" css={{ height: "$24"}}>
-                <Text b color="inherit" css={{d:"flex"}}>Connecté en tant que</Text>
-                <Text b color="inherit" css={{d:"flex"}}>{userName}</Text>
-                <Text color="inherit" css={{d:"flex"}}>{currentUser.email}</Text>
+              <Dropdown.Item key="profile" css={{ height: "$24" }}>
+                <Text b color="inherit" css={{ d: "flex" }}>Connecté en tant que</Text>
+                <Text b color="inherit" css={{ d: "flex" }}>{userName}</Text>
+                <Text color="inherit" css={{ d: "flex" }}>{currentUser.email}</Text>
               </Dropdown.Item>
-              <Dropdown.Item key="settings" withDivider>
-                Paramètres
-              </Dropdown.Item>
+              {currentUser.role === "retailer" &&
+                <Dropdown.Item key="dashboard" withDivider>
+                  Tableau de bord
+                </Dropdown.Item>
+              }
               <Dropdown.Item key="logout" withDivider color="error">
                 Se déconnecter
               </Dropdown.Item>
