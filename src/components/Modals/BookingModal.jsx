@@ -7,7 +7,7 @@ import { fr } from 'date-fns/locale';
 import { ToastContainer } from 'react-toastify';
 import Select from "../Select/Select";
 import { formatTime, notify } from '../../helpers/utils';
-import { postData } from "../../helpers/postData";
+import { postData } from "../../helpers/requestData";
 
 function BookingModal({ visible, setVisible, selectedShopId, setSelectedShopId }) {
   const [shopInfos, setShopInfos] = useState({});
@@ -141,6 +141,7 @@ function BookingModal({ visible, setVisible, selectedShopId, setSelectedShopId }
             weekStartsOn={1}
             disabled={disabledDays}
           />
+          {console.log(shopInfos)}
           {selectedDayAvailabilities &&
             <Select items={filterTimeSlots(selectedDayAvailabilities.TimeSlots)} selectedTimeSlot={selectedTimeSlot} setSelectedTimeSlot={setSelectedTimeSlot} />
           }

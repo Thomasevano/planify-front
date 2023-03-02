@@ -5,7 +5,7 @@ class AuthService {
   login(user) {
     return axios.post(`${import.meta.env.VITE_API_URL}/auth/`, user)
       .then(response => {
-        if(response.data.HttpCode === 200) {
+        if (response.data.HttpCode === 200) {
           if (response.data.Token) {
             localStorage.setItem("user", JSON.stringify(response.data.Token));
           }
@@ -28,6 +28,12 @@ class AuthService {
       const user = await decodeUserJWT(userToken);
       return user;
     }
+  }
+
+  getToken() {
+    const userToken = JSON.parse(localStorage.getItem('user'));
+    if (!userToken) return;
+    return userToken;
   }
 }
 

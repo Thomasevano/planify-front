@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Text, Navbar, Input, Button, Dropdown, Avatar } from "@nextui-org/react";
+import { Text, Navbar, Input, Button, Dropdown, Avatar, Link } from "@nextui-org/react";
 import { SearchIcon } from "./icons/searchIcon";
 import { useNavigate } from "react-router-dom";
 import { useCurrentUser } from "../CurrentUserContext";
@@ -30,9 +30,9 @@ function GlobalNavbar({ setInputText, setLoginModalVisible, setRegisterModalVisi
   return (
     <Navbar shouldHideOnScroll variant="sticky">
       <Navbar.Brand>
-        <Text b color="inherit" hideIn="xs">
+        <Link href="/" color="inherit">
           Planify
-        </Text>
+        </Link>
       </Navbar.Brand>
       <Navbar.Content
         css={{

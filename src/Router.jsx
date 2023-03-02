@@ -8,12 +8,11 @@ import NotFound from "./pages/NotFound";
 import DashboardPage from "./pages/DashboardPage";
 
 export default function Router({ inputText }) {
-
-  function ProtectedRoute({ children, redirectPath = "/" }) {
-    const { currentUser } = useCurrentUser();
-
-    if (!currentUser) {
-      return <Navigate to={redirectPath} />;
+  const { currentUser } = useCurrentUser();
+  
+  function ProtectedRoute({ children, redirectPath = "/", isAllowed }) {
+    if (!isAllowed) {
+      return <Navigate to={redirectPath} replace />;
     }
 
     return children;
@@ -25,7 +24,9 @@ export default function Router({ inputText }) {
       <Route
         path="profile"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute
+            isAllowed={!!currentUser}
+          >
             <ProfilPage />
           </ProtectedRoute>
         }
@@ -33,7 +34,9 @@ export default function Router({ inputText }) {
       <Route
         path="dashboard"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute
+            isAllowed={!!currentUser && currentUser.role === "retailer"}
+          >
             <DashboardPage />
           </ProtectedRoute>
         }
