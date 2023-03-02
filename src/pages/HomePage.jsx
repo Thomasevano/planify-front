@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ShopList from '../components/ShopList';
+import { Container, Text } from "@nextui-org/react";
 
 export default function HomePage({ inputText }) {
   const [shops, setShops] = useState([]);
@@ -11,9 +12,9 @@ export default function HomePage({ inputText }) {
   }, []);
 
   return (
-    <div>
-      <h1>Home Page</h1>
+    <>
+      <Text h1 align="center" css={{ margin:"1.25rem 0" }} >Choisissez un pratiquant</Text>
       <ShopList shops={shops} inputText={inputText} />
-    </div>
+    </>
   )
 }
