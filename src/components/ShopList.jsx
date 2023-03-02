@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Container, Card, Row, Button, Text } from "@nextui-org/react";
 import BookingModal from "./Modals/BookingModal";
 import { useCurrentUser } from "../CurrentUserContext";
+import RetailerModal from "./Modals/RetailerModal";
 
 function ShopList({ shops, inputText = '' }) {
   const [isBookingModalVisible, setIsBookingModalVisible] = useState(false);
@@ -61,9 +62,9 @@ function ShopList({ shops, inputText = '' }) {
           {isBookingModalVisible &&
             <BookingModal visible={isBookingModalVisible} setVisible={setIsBookingModalVisible} selectedShopId={selectedShopId} setSelectedShopId={setSelectedShopId} />
           }
-          {/* {isRetailerModalVisible &&
+          {isRetailerModalVisible &&
             <RetailerModal visible={isRetailerModalVisible} setVisible={setIsRetailerModalVisible} selectedShopId={selectedShopId} setSelectedShopId={setSelectedShopId} />
-          } */}
+          }
         </React.Fragment>
       ))}
     </Container>

@@ -6,12 +6,11 @@ import { differenceInCalendarDays, format, isToday } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { ToastContainer } from 'react-toastify';
 import Select from "../Select/Select";
-import { formatTime, notify } from '../../helpers/utils';
+import { formatTime, notify, footerFormatedDate, daysOfWeek, today } from '../../helpers/utils';
 import { postData } from "../../helpers/requestData";
 
 function BookingModal({ visible, setVisible, selectedShopId, setSelectedShopId }) {
   const [shopInfos, setShopInfos] = useState({});
-  const today = new Date();
   const [selectedDay, setSelectedDay] = useState(today);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState();
   const [customerName, setCustomerName] = useState();
@@ -19,10 +18,9 @@ function BookingModal({ visible, setVisible, selectedShopId, setSelectedShopId }
   const date = format(selectedDay, 'yyyy-MM-dd')
   const selectedDayIsToday = isToday(selectedDay);
 
-  const footer = <p>{format(selectedDay, 'PPPP', { locale: fr, weekStartsOn: 1 })}.</p>
+  const footer = <p>{footerFormatedDate}.</p>
   const selectedDayAvailabilities = shopInfos.Availabilities?.find(({ DayOfWeek }) => DayOfWeek === selectedDay.toLocaleString('default', { weekday: 'long' }).toLowerCase())
 
-  const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
   const daysOfWeekWithoutAvailabilities = daysOfWeek.filter(day => !shopInfos.Availabilities?.some(availability => (availability.DayOfWeek === day)));
   const indexOfDayOfWeekWithoutAvailabilities = daysOfWeekWithoutAvailabilities.map(day => daysOfWeek.indexOf(day));
   const disabledDays = { dayOfWeek: indexOfDayOfWeekWithoutAvailabilities };
