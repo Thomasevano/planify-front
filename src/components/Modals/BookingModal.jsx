@@ -4,16 +4,18 @@ import React from 'react';
 import { DayPicker, Row } from 'react-day-picker';
 import { differenceInCalendarDays, format, isToday } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { ToastContainer } from 'react-toastify';
 import Select from "../Select/Select";
 import { formatTime, notify, footerFormatedDate, daysOfWeek, today } from '../../helpers/utils';
 import { postData } from "../../helpers/requestData";
+import { useCurrentUser } from "../../CurrentUserContext";
 
 function BookingModal({ visible, setVisible, selectedShopId, setSelectedShopId }) {
   const [shopInfos, setShopInfos] = useState({});
   const [selectedDay, setSelectedDay] = useState(today);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState();
   const [customerName, setCustomerName] = useState();
+  const [customerEmail, setCustomerEmail] = useState();
+  const { currentUser } = useCurrentUser();
 
   const date = format(selectedDay, 'yyyy-MM-dd')
   const selectedDayIsToday = isToday(selectedDay);
@@ -79,38 +81,42 @@ function BookingModal({ visible, setVisible, selectedShopId, setSelectedShopId }
   }
 
   async function submitAppointment() {
+    let userId
+    let userEmail
+    let username
+
+    if (currentUser) {
+      userId = currentUser.id
+      userEmail = currentUser.email
+      username = currentUser.firstName + ' ' + currentUser.lastName
+    } else {
+      userId = null
+      userEmail = customerEmail
+      username = customerName
+    }
+
     const appointment = {
-      customer_name: customerName,
+      customer_name: username,
       appointment_date: date,
       appointment_time: `${formatTime(selectedTimeSlot)}:00`,
       shop_id: selectedShopId,
+      user_id: userId,
+      user_email: userEmail
     };
 
     closeHandler();
 
     try {
       const response = await postData(`${import.meta.env.VITE_API_URL}/appointments/`, appointment)
-      return notify(response.HttpCode, response.Message);
+      return notify(response.HttpCode, 'Votre rendez-vous a bien été pris');
     } catch (error) {
       console.error(error);
-      return notify(error.HttpCode, error.Message);
+      return notify(error.HttpCode, 'Une erreur est survenue lors de la prise de rendez-vous');
     };
   }
 
   return (
     <div>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
       <Modal
         closeButton
         blur
@@ -139,11 +145,15 @@ function BookingModal({ visible, setVisible, selectedShopId, setSelectedShopId }
             weekStartsOn={1}
             disabled={disabledDays}
           />
-          {console.log(shopInfos)}
           {selectedDayAvailabilities &&
             <Select items={filterTimeSlots(selectedDayAvailabilities.TimeSlots)} selectedTimeSlot={selectedTimeSlot} setSelectedTimeSlot={setSelectedTimeSlot} />
           }
-          <Input css={{ marginTop: "20px" }} underlined labelPlaceholder="Entrez votre Nom" onChange={(e) => setCustomerName(e.target.value)} />
+          {!currentUser &&
+            <>
+              <Input css={{ marginTop: "20px" }} underlined labelPlaceholder="Entrez votre Nom" onChange={(e) => setCustomerName(e.target.value)} />
+              <Input css={{ marginTop: "20px" }} underlined labelPlaceholder="Entrez votre Email" onChange={(e) => setCustomerEmail(e.target.value)} />
+            </>
+          }
         </Modal.Body>
         <Modal.Footer>
           <Button auto flat color="error" onPress={closeHandler}>

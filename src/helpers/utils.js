@@ -15,9 +15,7 @@ export function formatTime(timeSlot) {
 }
 
 export function notify(httpCode, message) {
-  toast(message,
-    { type: httpCode === 200 ? "success" : "error", theme: "colored" },
-  );
+  return toast(message,{ type: httpCode === 200 ? "success" : "error", theme: "colored" });
 }
 
 export const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
