@@ -92,14 +92,16 @@ function GlobalNavbar({ setInputText, setLoginModalVisible, setRegisterModalVisi
               color="primary"
               onAction={(actionKey) => actionKey === 'logout' ? logout() : navigate('/' + actionKey)}
             >
-              <Dropdown.Item key="profile" css={{ height: "$24"}}>
-                <Text b color="inherit" css={{d:"flex"}}>Connecté en tant que</Text>
-                <Text b color="inherit" css={{d:"flex"}}>{userName}</Text>
-                <Text color="inherit" css={{d:"flex"}}>{currentUser.email}</Text>
+              <Dropdown.Item key="profile" css={{ height: "$24" }}>
+                <Text b color="inherit" css={{ d: "flex" }}>Connecté en tant que</Text>
+                <Text b color="inherit" css={{ d: "flex" }}>{userName}</Text>
+                <Text color="inherit" css={{ d: "flex" }}>{currentUser.email}</Text>
               </Dropdown.Item>
-              <Dropdown.Item key="settings" withDivider>
-                Paramètres
-              </Dropdown.Item>
+              {currentUser.role === "retailer" &&
+                <Dropdown.Item key="dashboard" withDivider>
+                  Tableau de bord
+                </Dropdown.Item>
+              }
               <Dropdown.Item key="logout" withDivider color="error">
                 Se déconnecter
               </Dropdown.Item>
