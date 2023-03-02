@@ -5,7 +5,7 @@ import BookingModal from "./Modals/BookingModal";
 
 function ShopList({ shops, inputText }) {
   const [visible, setVisible] = useState(false);
-  const [selectedShopId, setSelectedShopId] = useState({});
+  const [selectedShopId, setSelectedShopId] = useState(null);
 
   function handler(shopId) {
     setVisible(true);
@@ -25,27 +25,28 @@ function ShopList({ shops, inputText }) {
 
 
   return (
-    <Container gap={1} css={{ d: 'flex', flexWrap: 'wrap' }}>
+    <Container css={{ d: 'flex', flexWrap: 'wrap' }}>
       {filteredShops.map((shop) => (
         <React.Fragment key={shop.ID}>
-          <Card isHoverable variant="bordered" css={{ mw: "300px", margin: "5px" }}>
+          <Card variant="bordered" css={{ mw: "250px", margin: "16px" }}>
             <Card.Header>
               <Text b>{shop.ShopName}</Text>
             </Card.Header>
             <Card.Divider />
             <Card.Body css={{ py: "$10" }}>
-              <Text>
-                {shop.Address}
-              </Text>
+              <Text b>{shop.Description}</Text>
+              <Text>{shop.PhoneNumber}</Text>
+              <Text>{shop.Address}</Text>
             </Card.Body>
-            <Card.Divider />
             <Card.Footer>
-              <Row justify="flex-end">
-                <Button size="sm" shadow onPress={() => handler(shop.ID)}>Prendre rendez-vous</Button>
+              <Row justify="center">
+                <Button size="md" onPress={() => handler(shop.ID)}>Prendre rendez-vous</Button>
               </Row>
             </Card.Footer>
           </Card>
-          <BookingModal visible={visible} setVisible={setVisible} selectedShopId={selectedShopId} setSelectedShopId={setSelectedShopId} />
+          {visible &&
+            <BookingModal visible={visible} setVisible={setVisible} selectedShopId={selectedShopId} setSelectedShopId={setSelectedShopId} />
+          }
         </React.Fragment>
       ))}
     </Container>

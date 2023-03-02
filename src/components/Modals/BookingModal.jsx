@@ -10,7 +10,7 @@ import { formatTime, notify } from '../../helpers/utils';
 import { postData } from "../../helpers/postData";
 
 function BookingModal({ visible, setVisible, selectedShopId, setSelectedShopId }) {
-  const [shopInfos, setshopInfos] = useState({});
+  const [shopInfos, setShopInfos] = useState({});
   const today = new Date();
   const [selectedDay, setSelectedDay] = useState(today);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState();
@@ -31,7 +31,7 @@ function BookingModal({ visible, setVisible, selectedShopId, setSelectedShopId }
     if (!selectedShopId) return;
     fetch(`${import.meta.env.VITE_API_URL}/shops/${selectedShopId}`)
       .then(response => response.json())
-      .then(json => setshopInfos(json))
+      .then(json => setShopInfos(json))
   }, [selectedShopId]);
 
   function isPastDate(date) {
@@ -47,7 +47,7 @@ function BookingModal({ visible, setVisible, selectedShopId, setSelectedShopId }
   const closeHandler = () => {
     setSelectedTimeSlot();
     setCustomerName();
-    setSelectedShopId();
+    setSelectedShopId(null);
     setSelectedDay(today);
     setVisible(false);
   }
