@@ -6,7 +6,7 @@ import { useCurrentUser } from "../CurrentUserContext";
 import authService from "../services/auth.service";
 import { notify } from "../helpers/utils";
 
-function GlobalNavbar({ setInputText, setLoginModalVisible, setRegisterModalVisible }) {
+function GlobalNavbar({ setInputText, setLoginModalVisible, setRegisterModalVisible, setCreateCabinetModalVisible }) {
   const navigate = useNavigate();
   const { currentUser, fetchCurrentUser, logoutUser } = useCurrentUser();
   const userName = currentUser && currentUser.firstName + " " + currentUser.lastName;
@@ -78,6 +78,11 @@ function GlobalNavbar({ setInputText, setLoginModalVisible, setRegisterModalVisi
       </Navbar.Content>
       {currentUser ? (
         <Navbar.Content>
+          <Navbar.Item>
+            <Button auto flat color="secondary" onPress={() => setCreateCabinetModalVisible(true)}>
+              Créer mon cabinet
+            </Button>
+          </Navbar.Item>
           <Dropdown placement="bottom-right">
             <Navbar.Item>
               <Dropdown.Trigger>
