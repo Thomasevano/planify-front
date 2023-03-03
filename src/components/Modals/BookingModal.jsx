@@ -108,7 +108,7 @@ function BookingModal({ visible, setVisible, selectedShopId, setSelectedShopId }
 
     try {
       const response = await postData(`${import.meta.env.VITE_API_URL}/appointments/`, appointment)
-      return notify(response.HttpCode, 'Votre rendez-vous a bien été pris');
+      return notify(response.HttpCode, response.HttpCode === 200 ? 'Votre rendez-vous a bien été pris': 'Une erreur est survenue lors de la prise de rendez-vous');
     } catch (error) {
       console.error(error);
       return notify(error.HttpCode, 'Une erreur est survenue lors de la prise de rendez-vous');
