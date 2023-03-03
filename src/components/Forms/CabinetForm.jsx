@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from "react";
-import { useForm, Controller } from "react-hook-form";
-import {Button, Modal, Container, Card, Row, Text, Checkbox, Grid} from "@nextui-org/react";
-import { yupResolver } from "@hookform/resolvers/yup";
+import React, {useState} from "react";
+import {Controller, useForm} from "react-hook-form";
+import {Button, Card, Checkbox, Container, Grid, Modal, Row, Text} from "@nextui-org/react";
+import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import authService from "../../services/auth.service";
 import ErrorMessage from "../ErrorMessage";
 import InputForm from "./InputForm";
-import { notify } from "../../helpers/utils";
+import {daysOfWeek, notify} from "../../helpers/utils";
 import TextForm from "./TextForm.jsx";
 import Select from "../Select/Select.jsx";
-import { useCurrentUser } from "../../CurrentUserContext.jsx";
+import {useCurrentUser} from "../../CurrentUserContext.jsx";
 import {postData} from "../../helpers/requestData.js";
 
 const schema = yup.object().shape({
@@ -20,6 +20,8 @@ const schema = yup.object().shape({
 }).required();
 
 function CabinetForm({ closeHandler }) {
+    const [availabilities, setAvailabilities] = useState([]);
+    const [timeAvailabilities, setTimeAvailabilities] = useState(daysOfWeek.map(day => ({ DayOfWeek: day, StartTime: '00:00', EndTime: '00:00', Duration: '15' })));
 
     const { currentUser } = useCurrentUser();
 
@@ -38,8 +40,6 @@ function CabinetForm({ closeHandler }) {
     const [failedCreateCabinet, setFailedCreateCabinet] = useState(false);
     const [failedCreateCabinetMessage, setFailedCreateCabinetMessage] = useState('');
 
-    const [availabilities, setAvailabilities] = useState([]);
-    const [timeAvailabilities, setTimeAvailabilities] = useState({monday: {start: '', end: ''}, tuesday: {start: '', end: ''}, wednesday: {start: '', end: ''}, thursday: {start: '', end: ''}, friday: {start: '', end: ''}, saturday: {start: '', end: ''}, sunday: {start: '', end: ''}});
 
     const userToken = authService.getToken();
 
@@ -57,11 +57,29 @@ function CabinetForm({ closeHandler }) {
         "00:00", "00:30", "01:00", "01:30", "02:00", "02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30", "06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30",
     ]
 
+    const findAvailibility = (day, returnValue = false) => {
+        for (const [key, value] of Object.entries(timeAvailabilities)) {
+            if (value.DayOfWeek === day) {
+                if (returnValue) {
+                    return value;
+                } else {
+                    return key;
+                }
+            }
+        }
+    }
+
     const changeTimeAvailability = (day, start, end) => {
-        timeAvailabilities[day] = { start: start, end: end };
+        const availability = findAvailibility(day);
+        var filtered = timeAvailabilities.filter(function(el) { return el.DayOfWeek != day; });
+        filtered.push({ DayOfWeek: day, StartTime: start, EndTime: end, Duration: '15' });
+        setTimeAvailabilities(filtered);
+        console.log(timeAvailabilities);
     }
 
     const onCreateCabinetSubmit = async data => {
+        data['Availabilities'] = timeAvailabilities;
+        console.log(data);
 
         await postData(`${import.meta.env.VITE_API_URL}/shops`, data, userToken)
             .then((response) => {
@@ -77,7 +95,9 @@ function CabinetForm({ closeHandler }) {
             .catch(error => {
                 console.log(error);
             })
+
     };
+
 
     return (
         <form onSubmit={handleSubmit(onCreateCabinetSubmit)}>
@@ -125,8 +145,8 @@ function CabinetForm({ closeHandler }) {
                                             <Select
                                                 items={listTimeSlots}
                                                 format={false}
-                                                selectedTimeSlot={timeAvailabilities[day.value].start}
-                                                setSelectedTimeSlot={(timeValue) => changeTimeAvailability(day.value, timeValue, timeAvailabilities[day.value].end)}
+                                                selectedTimeSlot={findAvailibility(day.value, true)?.StartTime}
+                                                setSelectedTimeSlot={(timeValue) => changeTimeAvailability(day.value, timeValue, findAvailibility(day.value, true)?.EndTime)}
                                                 label={"Heure d'ouverture"}
                                                 style={{ width: '100%' }}
                                             />
@@ -135,8 +155,8 @@ function CabinetForm({ closeHandler }) {
                                             <Select
                                                 items={listTimeSlots}
                                                 format={false}
-                                                selectedTimeSlot={timeAvailabilities[day.value].end}
-                                                setSelectedTimeSlot={(timeValue) => changeTimeAvailability(day.value, timeAvailabilities[day.value].start, timeValue)}
+                                                selectedTimeSlot={findAvailibility(day.value, true)?.EndTime}
+                                                setSelectedTimeSlot={(timeValue) => changeTimeAvailability(day.value, findAvailibility(day.value, true)?.StartTime, timeValue)}
                                                 label={"Heure de fermeture"}
                                                 style={{ width: '100%' }}
                                             />
