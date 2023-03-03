@@ -9,23 +9,28 @@ import InputForm from "./InputForm";
 import { notify } from "../../helpers/utils";
 import TextForm from "./TextForm.jsx";
 import Select from "../Select/Select.jsx";
-import axios from "axios";
+import { useCurrentUser } from "../../CurrentUserContext.jsx";
+import {postData} from "../../helpers/requestData.js";
 
 const schema = yup.object().shape({
     ShopName: yup.string().min(3, 'Le nom du cabinet doit contenir au moins 3 caractères').max(64, 'Le nom du cabinet doit contenir au plus 64 caractères'),
     Description: yup.string().min(3, 'La description doit contenir au moins 3 caractèrtes').max(255, 'La description doit contenir au plus 255 caractères'),
     Address: yup.string().min(10, 'L\'adresse doit contenir au moins 10 caractères').max(255, 'L\'adresse doit contenir au plus 255 caractères'),
-    PhoneNumber: yup.number(),
+    PhoneNumber: yup.string(),
 }).required();
 
 function CabinetForm({ closeHandler }) {
+
+    const { currentUser } = useCurrentUser();
+
     const { control, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
             ShopName: '',
             Description: '',
             Address: '',
             PhoneNumber: '',
-            Availabilities: 'customer',
+            UserId: currentUser.id,
+            Availabilities: timeAvailabilities,
         },
         resolver: yupResolver(schema),
     });
@@ -35,7 +40,8 @@ function CabinetForm({ closeHandler }) {
 
     const [availabilities, setAvailabilities] = useState([]);
     const [timeAvailabilities, setTimeAvailabilities] = useState({monday: {start: '', end: ''}, tuesday: {start: '', end: ''}, wednesday: {start: '', end: ''}, thursday: {start: '', end: ''}, friday: {start: '', end: ''}, saturday: {start: '', end: ''}, sunday: {start: '', end: ''}});
-    const [refresher, setRefresher] = useState(0);
+
+    const userToken = authService.getToken();
 
     const listDays = [
         {value: 'monday', label: 'Lundi'},
@@ -55,8 +61,9 @@ function CabinetForm({ closeHandler }) {
         timeAvailabilities[day] = { start: start, end: end };
     }
 
-    const onCreateCabinetSubmit = data => {
-        axios.post(`${import.meta.env.VITE_API_URL}/shops`, data)
+    const onCreateCabinetSubmit = async data => {
+
+        await postData(`${import.meta.env.VITE_API_URL}/shops`, data, userToken)
             .then((response) => {
                 console.log(response);
                 if (response.data.HttpCode === 200) {
@@ -109,7 +116,7 @@ function CabinetForm({ closeHandler }) {
                     value={availabilities}
                     onChange={setAvailabilities}>
                     { listDays.map((day) => (
-                        <div>
+                        <div key={day.value}>
                             <Checkbox size='sm' key={day.value} value={day.value}>{day.label}</Checkbox>
                             {availabilities.includes(day.value) &&
                                 (
