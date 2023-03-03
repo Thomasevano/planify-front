@@ -21,7 +21,7 @@ const schema = yup.object().shape({
 
 function CabinetForm({ closeHandler }) {
     const [availabilities, setAvailabilities] = useState([]);
-    const [timeAvailabilities, setTimeAvailabilities] = useState(daysOfWeek.map(day => ({ DayOfWeek: day, StartTime: '00:00', EndTime: '00:00', Duration: '15' })));
+    const [timeAvailabilities, setTimeAvailabilities] = useState(daysOfWeek.map(day => ({ DayOfWeek: day, StartTime: '00:00', EndTime: '00:00', Duration: 15 })));
 
     const { currentUser } = useCurrentUser();
 
