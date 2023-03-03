@@ -4,6 +4,7 @@ import { SearchIcon } from "./icons/searchIcon";
 import { useNavigate } from "react-router-dom";
 import { useCurrentUser } from "../CurrentUserContext";
 import authService from "../services/auth.service";
+import { notify } from "../helpers/utils";
 
 function GlobalNavbar({ setInputText, setLoginModalVisible, setRegisterModalVisible, setCreateCabinetModalVisible }) {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ function GlobalNavbar({ setInputText, setLoginModalVisible, setRegisterModalVisi
   function logout() {
     authService.logout();
     logoutUser();
+    notify(200, "Vous êtes déconnecté !")
     navigate("/");
   }
 

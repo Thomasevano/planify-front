@@ -7,6 +7,7 @@ import authService from '../../services/auth.service';
 import ErrorMessage from '../ErrorMessage';
 import { Password } from '../icons/Password';
 import InputForm from "./InputForm";
+import { notify } from '../../helpers/utils';
 
 const schema = yup.object().shape({
   Email: yup.string().email("l'adresse email n'est pas valide"),
@@ -32,6 +33,7 @@ function LoginForm({ closeHandler }) {
         if (response.HttpCode === 200) {
           setFailedLogin(false);
           closeHandler();
+          notify(response.HttpCode, 'Vous êtes connecté !')
           window.location.reload();
         } else {
           setFailedLogin(true);
