@@ -25,7 +25,7 @@ export default function HomePage({ inputText }) {
         draggable
         pauseOnHover
       />
-      <Text h1 align="center" css={{ margin: "1.25rem 0" }}>Choisissez un pratiquant</Text>
+      <Text h1 align="center" css={{ margin: "1.25rem 0" }}>Choisissez un praticien</Text>
       <ShopList shops={shops} inputText={inputText} />
     </>
   )
