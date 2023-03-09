@@ -1,16 +1,16 @@
-import React, {useState} from "react";
-import {Controller, useForm} from "react-hook-form";
-import {Button, Card, Checkbox, Container, Grid, Modal, Row, Text} from "@nextui-org/react";
-import {yupResolver} from "@hookform/resolvers/yup";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Button, Card, Checkbox, Container, Grid, Modal, Row, Text } from "@nextui-org/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import authService from "../../services/auth.service";
 import ErrorMessage from "../ErrorMessage";
 import InputForm from "./InputForm";
-import {daysOfWeek, notify} from "../../helpers/utils";
+import { daysOfWeek, notify } from "../../helpers/utils";
 import TextForm from "./TextForm.jsx";
 import Select from "../Select/Select.jsx";
-import {useCurrentUser} from "../../CurrentUserContext.jsx";
-import {postData} from "../../helpers/requestData.js";
+import { useCurrentUser } from "../../CurrentUserContext.jsx";
+import { postData } from "../../helpers/requestData.js";
 
 const schema = yup.object().shape({
     ShopName: yup.string().min(3, 'Le nom du cabinet doit contenir au moins 3 caractères').max(64, 'Le nom du cabinet doit contenir au plus 64 caractères'),
@@ -44,13 +44,13 @@ function CabinetForm({ closeHandler }) {
     const userToken = authService.getToken();
 
     const listDays = [
-        {value: 'monday', label: 'Lundi'},
-        {value: 'tuesday', label: 'Mardi'},
-        {value: 'wednesday', label: 'Mercredi'},
-        {value: 'thursday', label: 'Jeudi'},
-        {value: 'friday', label: 'Vendredi'},
-        {value: 'saturday', label: 'Samedi'},
-        {value: 'sunday', label: 'Dimanche'},
+        { value: 'monday', label: 'Lundi' },
+        { value: 'tuesday', label: 'Mardi' },
+        { value: 'wednesday', label: 'Mercredi' },
+        { value: 'thursday', label: 'Jeudi' },
+        { value: 'friday', label: 'Vendredi' },
+        { value: 'saturday', label: 'Samedi' },
+        { value: 'sunday', label: 'Dimanche' },
     ];
 
     const listTimeSlots = [
@@ -71,8 +71,8 @@ function CabinetForm({ closeHandler }) {
 
     const changeTimeAvailability = (day, start, end) => {
         const availability = findAvailibility(day);
-        var filtered = timeAvailabilities.filter(function(el) { return el.DayOfWeek != day; });
-        filtered.push({ DayOfWeek: day, StartTime: start, EndTime: end, Duration: '15' });
+        var filtered = timeAvailabilities.filter(function (el) { return el.DayOfWeek != day; });
+        filtered.push({ DayOfWeek: day, StartTime: start, EndTime: end, Duration: 15 });
         setTimeAvailabilities(filtered);
         console.log(timeAvailabilities);
     }
@@ -135,7 +135,7 @@ function CabinetForm({ closeHandler }) {
                     label="Jours et Horaires d'ouverture"
                     value={availabilities}
                     onChange={setAvailabilities}>
-                    { listDays.map((day) => (
+                    {listDays.map((day) => (
                         <div key={day.value}>
                             <Checkbox size='sm' key={day.value} value={day.value}>{day.label}</Checkbox>
                             {availabilities.includes(day.value) &&
